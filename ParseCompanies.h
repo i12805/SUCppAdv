@@ -16,8 +16,8 @@
 
 Company* parseUniqueCompanies(std::string str, int &count, std::string (*pfParseFn)(const Company& c))
 {
-	std::vector<Company> compVec; // = new std::vector<Company*>; 
-	std::map<std::string, Company> aMap;
+	std::vector<Company*>* compVec = new std::vector<Company*>; 
+	std::map<std::string, Company*> aMap;
 	std::string companyDelimiter = "\n";
 	auto startPos = 0u;
 	auto endPos = str.find(companyDelimiter);
@@ -39,23 +39,26 @@ Company* parseUniqueCompanies(std::string str, int &count, std::string (*pfParse
 
 		Company* shit = new Company(id, name);
 		std::string sss = pfParseFn(*shit);
-		std::cout << "Parse ret.: " << sss << std::endl;
-		aMap.insert(sss, shit);
-		
+//		std::cout << "Parse ret.: " << sss << std::endl;
+		aMap.insert(std::make_pair(sss, shit));
+
 		startPos = endPos + companyDelimiter.length();
 		endPos = str.find(companyDelimiter, startPos);
 	}
-	count = compVec.size();
-	std::cout << "bye; count:" << count << std::endl;
-
-	std::map<std::string, Company>::iterator it = aMap.begin();
+	count = aMap.size();
+//	std::cout << "bye; count:" << count << std::endl;
+	int idx = 0;
+	std::map<std::string, Company*>::iterator it = aMap.begin();
 	while(it != aMap.end())
 	{
-		std::cout << it->first << ":" << (it->second).toString() << std::endl;
+//		std::cout << it->first << ":" << (it->second)->toString() << std::endl;
+		compVec->push_back(it->second);
+		std::cout << (*compVec)[idx++]->toString() << std::endl;
 		it++;
+
 	}
 
-	return(nullptr);
+	return(compVec->front());
 }
 
 
